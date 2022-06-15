@@ -1,0 +1,37 @@
+<%- include("header") -%>
+
+
+        <div class="box" id="heading">
+            <h1>
+                <%= list_title %>
+            </h1>
+        </div>
+
+
+    <% if(new_list_items.length===0){ %>
+        <h3>No tasks added!</h3>
+        <% } else{ %>
+            <% for(var index=0; index < new_list_items.length; index++){ %>
+                <div class="box">
+
+                    <form action = "/delete" method = "post">
+                        <div class="item">
+                            <input type="checkbox" name="is_task_done" value="<%= new_list_items[index]._id %>" onChange="this.form.submit()" />
+                            <p>
+                                <%= new_list_items[index].name %>
+                            </p>
+                        </div>
+                        <input type="hidden" name="ListName" value="<%= list_title %>"></input>
+                    </form>
+                </div>
+                <% } %>
+                    <% } %>
+                        <div class="box">
+                            <form class="item" action="/" , method="post">
+                                <input type="text" name="task" placeholder="Write down your tasks here..."
+                                    autocomplete="off" required />
+                                <button type="submit" name="list" value=<%=list_title %>>+</button>
+                            </form>
+                        </div>
+
+                        <%- include("footer") -%>
