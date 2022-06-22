@@ -1,4 +1,5 @@
 // importing modules
+require("dotenv").config(); 
 const express = require("express");
 const body_parser = require("body-parser");
 const ejs = require("ejs");
@@ -15,7 +16,7 @@ app.use(body_parser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 // connecting to the local DB
-mongoose.connect("mongodb+srv://admin-himali:Random_406@atlascluster.umske.mongodb.net/todoListDB", {useNewUrlParser: true});
+mongoose.connect(process.env.SERVER_URL, {useNewUrlParser: true});
 
 //creating schema
 const item_schema = new mongoose.Schema({
@@ -86,8 +87,6 @@ app.get("/", function (request, response) {
 
     if(error){
       console.log("find() error" + error);
-    }else{
-      console.log(found_items);
     }
   });
 });
@@ -101,8 +100,7 @@ app.get("/", function (request, response) {
 
 app.get("/:customListName", function(request, response){
   const custom_list_name = _.capitalize(request.params.customListName);
-  console.log(custom_list_name);
-
+  
   /*
     checking if the list name already exists in the collection
     using findOne() to check for any occurence of the list name 
@@ -133,23 +131,15 @@ app.get("/about", function (request, response) {
   response.render("about");
 });
 
-
-
-
-
 app.post("/", function (request, response) {
-  console.log(request.body);
   const list_name = request.body.list;
   const item_name = request.body.task;
-
-  console.log("List name inside post / " + list_name);
 
   const item = new Item({
     name: item_name
   });
 
   const day = (date.getDate()).split(" ");
-  console.log("Day " + day[0]);
 
   if(list_name == day[0]){
     item.save();
@@ -169,11 +159,8 @@ app.post("/delete", function(request, response){
   const ListName = request.body.ListName;
 
   const day = date.getDate()
-  console.log("Day inside delete() " + day);
-  console.log("List name inside delete() " + ListName)
 
   if(ListName === day){
-    console.log(checked_item_id);
     Item.findByIdAndRemove(checked_item_id, function(error){
       console.log("findByIdAndRemove() error: " + error);
     });
